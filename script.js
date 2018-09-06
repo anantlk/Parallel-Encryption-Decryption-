@@ -1,8 +1,8 @@
 let Jimp = require("jimp");
 let des = require("./des/des.js");
-let key = "10101010";
-let message = "101010100";
-
+const key = "10101010";
+let arr = [];
+let decrypt = [];
 function stringToHex(s) {
   var r = "0x";
   var hexes = new Array(
@@ -29,17 +29,16 @@ function stringToHex(s) {
   return r;
 }
 
-Jimp.read("image.png")
-  .then(lenna => {
-    console.log(lenna.bitmap.data);
-    let cipherText = des.des(key, lenna.bitmap.data[0].toString(), 1, 0);
-    console.log(cipherText);
-    let str = stringToHex(cipherText);
-    console.log(str);
-    console.log((parseInt(str, 16) % 255).toString(2));
-    return lenna
-      .resize(256, 256) // resize
-      .write("lena-small-bw.jpg"); // save
+Jimp.read("download.jpeg")
+  .then(image => {
+    image.resize(50, 50);
+    for (let i = 0; i < image.bitmap.data.length; i++) {
+      let cipherText = des.des(key, image.bitmap.data[i].toString(), 1);
+      let str = stringToHex(cipherText);
+      image.bitmap.data[i] = parseInt(str, 16) % 255;
+    }
+    image.write("lena-small-bw.jpg");
+    return image.bitmap.data;
   })
   .catch(err => {
     console.error(err);
