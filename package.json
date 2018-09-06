@@ -1,0 +1,23 @@
+{
+  "name": "Parallel-Image-Computation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anantlk/Parallel-Encryption-Decryption-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anantlk/Parallel-Encryption-Decryption-/issues"
+  },
+  "homepage": "https://github.com/anantlk/Parallel-Encryption-Decryption-#readme",
+  "dependencies": {
+    "jimp": "^0.4.0"
+  }
+}
