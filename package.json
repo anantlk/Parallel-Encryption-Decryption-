@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/anantlk/Parallel-Encryption-Decryption-#readme",
   "dependencies": {
+    "cluster": "^0.7.7",
     "jimp": "^0.4.0",
-    "node-forge": "^0.7.6"
+    "node-forge": "^0.7.6",
+    "os": "^0.1.1"
   }
 }
