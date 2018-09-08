@@ -1,16 +1,32 @@
-const readImage = require("./readImage");
+const computeImage = require("./image");
 const task = require("./task");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
+let numberOfActiveChildProcesses = 0;
 let workers = [];
 let pos = 0;
 let encryptedData = [];
 let temp = [];
+
 if (cluster.isMaster) {
   console.log(`Number of processors are ${numCPUs}`);
   masterProcess();
 } else {
   childProcess();
+}
+
+function mergeData(temp) {
+  console.log(temp.length);
+  temp.sort(function(a, b) {
+    return a.id - b.id;
+  });
+  for (obj of temp) {
+    for (pixel of obj.data) {
+      encryptedData.push(pixel);
+    }
+  }
+  computeImage.write(encryptedData);
+  console.log(encryptedData.length);
 }
 
 function childProcess() {
@@ -26,7 +42,9 @@ function childProcess() {
         encryptedPixels.length
       }`
     );
-    process.send({ id: obj.data.id, data: encryptedPixels });
+    process.send({ id: obj.data.id, data: encryptedPixels }, () => {
+      process.exit();
+    });
   });
 }
 
@@ -35,6 +53,7 @@ async function masterProcess() {
   for (let i = 0; i < numCPUs; i++) {
     console.log(`Forking process number ${i}`);
     const worker = cluster.fork();
+    numberOfActiveChildProcesses++;
     workers.push(worker);
     worker.on("message", msg => {
       console.log(
@@ -45,7 +64,7 @@ async function masterProcess() {
       temp.push(msg);
     });
   }
-  let image = await readImage.read();
+  let image = await computeImage.read();
   let pixelArray = Array.prototype.slice.call(image.bitmap.data, 0);
   let numOfPixels = pixelArray.length;
   console.log(numOfPixels);
@@ -62,3 +81,15 @@ async function masterProcess() {
     pos = pos + parseInt(numOfPixels / workers.length);
   });
 }
+
+cluster.on("exit", (worker, code, signal) => {
+  console.log(`woker ${worker.id} exited`);
+  numberOfActiveChildProcesses--;
+  console.log(
+    "Number of active child processes:",
+    numberOfActiveChildProcesses
+  );
+  if (numberOfActiveChildProcesses === 0) {
+    mergeData(temp);
+  }
+});
