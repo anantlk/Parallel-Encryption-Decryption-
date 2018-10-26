@@ -3,11 +3,12 @@ const key = "10101010";
 let arr = [];
 
 module.exports.encrypt = data => {
-  console.log("Encrypting the data");
+  // console.log("Encrypting the data");
   for (let i = 0; i < data.length; i++) {
     let cipherText = des.des(key, data[i].toString(), 1);
     let str = stringToHex(cipherText);
     arr.push(parseInt(str, 16) % 255);
+    //console.log("Encrypted Color Code:", parseInt(str, 16) % 255);
   }
   return arr;
 };

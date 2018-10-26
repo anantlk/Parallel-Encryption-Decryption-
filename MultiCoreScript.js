@@ -7,6 +7,7 @@ let workers = [];
 let pos = 0;
 let encryptedData = [];
 let temp = [];
+let startTime, endTime;
 
 if (cluster.isMaster) {
   console.log(`Number of processors are ${numCPUs}`);
@@ -15,18 +16,37 @@ if (cluster.isMaster) {
   childProcess();
 }
 
+cluster.on("exit", (worker, code, signal) => {
+  console.log(`\nWoker ${worker.id} exited\n`);
+  numberOfActiveChildProcesses--;
+  // console.log(
+  //   "Number of active child processes:",
+  //   numberOfActiveChildProcesses
+  // );
+  if (numberOfActiveChildProcesses === 0) {
+    mergeData(temp);
+  }
+});
+
 function mergeData(temp) {
-  console.log(temp.length);
-  temp.sort(function(a, b) {
-    return a.id - b.id;
-  });
+  // console.log(temp.length);
+  // temp.sort(function(a, b) {
+  //   return a.id - b.id;
+  // });
   for (obj of temp) {
     for (pixel of obj.data) {
       encryptedData.push(pixel);
     }
   }
   computeImage.write(encryptedData);
-  console.log(encryptedData.length);
+  console.log("Image Encryption Successful!!");
+  // console.log(encryptedData.length);
+  endTime = Date.now();
+  console.log(
+    "Time taken for encryption",
+    (endTime - startTime) / 1000,
+    "seconds"
+  );
 }
 
 function childProcess() {
@@ -57,9 +77,7 @@ async function masterProcess() {
     workers.push(worker);
     worker.on("message", msg => {
       console.log(
-        `Master with process id ${msg.id} recieves msg ${
-          msg.data.length
-        } from worker ${worker.process.pid}`
+        `Master recieves msg ${msg.data.length} from worker ${msg.id}`
       );
       temp.push(msg);
     });
@@ -67,7 +85,10 @@ async function masterProcess() {
   let image = await computeImage.read();
   let pixelArray = Array.prototype.slice.call(image.bitmap.data, 0);
   let numOfPixels = pixelArray.length;
-  console.log(numOfPixels);
+  console.log("Width of the image:", image.bitmap.width);
+  console.log("Height of the image:", image.bitmap.height);
+  startTime = Date.now();
+  console.log("Encrypting the image...");
   workers.forEach((worker, index) => {
     worker.send({
       data: {
@@ -81,15 +102,3 @@ async function masterProcess() {
     pos = pos + parseInt(numOfPixels / workers.length);
   });
 }
-
-cluster.on("exit", (worker, code, signal) => {
-  console.log(`woker ${worker.id} exited`);
-  numberOfActiveChildProcesses--;
-  console.log(
-    "Number of active child processes:",
-    numberOfActiveChildProcesses
-  );
-  if (numberOfActiveChildProcesses === 0) {
-    mergeData(temp);
-  }
-});

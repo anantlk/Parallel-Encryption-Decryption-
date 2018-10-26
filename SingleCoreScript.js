@@ -28,15 +28,29 @@ function stringToHex(s) {
   return r;
 }
 
-Jimp.read("download.jpeg")
+if (process.pid) {
+  console.log("Script running on process id:", process.pid);
+}
+
+Jimp.read("image.png")
   .then(image => {
+    console.log("Width Of The image:", image.bitmap.width);
+    console.log("Height Of The image:", image.bitmap.height);
+    let startTime = Date.now();
+    console.log("Encrypting the image...");
     for (let i = 0; i < image.bitmap.data.length; i++) {
       let cipherText = des.des(key, image.bitmap.data[i].toString(), 1);
       let str = stringToHex(cipherText);
       image.bitmap.data[i] = parseInt(str, 16) % 255;
-      console.log("The encrypted pixel value:", parseInt(str, 16) % 255);
     }
+    console.log("Image Encryption Successful!!");
     image.write("lena-small-bw.jpg");
+    let endTime = Date.now();
+    console.log(
+      "Time taken for encryption:",
+      (endTime - startTime) / 1000,
+      "seconds"
+    );
     return image.bitmap.data;
   })
   .catch(err => {

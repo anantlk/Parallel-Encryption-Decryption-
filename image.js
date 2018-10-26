@@ -1,14 +1,14 @@
 let Jimp = require("jimp");
 
 module.exports.read = async () => {
-  let image = await Jimp.read("download.jpeg");
+  let image = await Jimp.read("original.jpeg");
   height = image.bitmap.height;
   width = image.bitmap.width;
   return image;
 };
 
 module.exports.write = async encryptedData => {
-  console.log(width, height);
+  // console.log(width, height);
   let image = await new Jimp(width, height);
   for (let pos = 0; pos < encryptedData.length; pos = pos + 4) {
     image.bitmap.data[pos] = encryptedData[pos];
