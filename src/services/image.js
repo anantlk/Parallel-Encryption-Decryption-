@@ -1,7 +1,9 @@
 let Jimp = require("jimp");
+const path = require("path");
 
 module.exports.read = async () => {
-  let image = await Jimp.read("original.jpeg");
+  const FILENAME = "download.jpeg";
+  let image = await Jimp.read(path.join(__dirname, "..", "data", FILENAME));
   height = image.bitmap.height;
   width = image.bitmap.width;
   return image;
@@ -16,5 +18,5 @@ module.exports.write = async encryptedData => {
     image.bitmap.data[pos + 2] = encryptedData[pos + 2];
     image.bitmap.data[pos + 3] = encryptedData[pos + 3];
   }
-  image.write("abc.jpg");
+  image.write(path.join(__dirname, "..", "out", "output.jpeg"));
 };

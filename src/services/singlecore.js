@@ -1,4 +1,5 @@
 const Jimp = require("jimp");
+const path = require("path");
 const des = require("./des/des");
 const key = "10101010";
 
@@ -32,7 +33,7 @@ if (process.pid) {
   console.log("Script running on process id:", process.pid);
 }
 
-Jimp.read("image.png")
+Jimp.read(path.join(__dirname, "..", "data", "image.png"))
   .then(image => {
     console.log("Width Of The image:", image.bitmap.width);
     console.log("Height Of The image:", image.bitmap.height);
@@ -44,7 +45,7 @@ Jimp.read("image.png")
       image.bitmap.data[i] = parseInt(str, 16) % 255;
     }
     console.log("Image Encryption Successful!!");
-    image.write("lena-small-bw.jpg");
+    image.write(path.join(__dirname, "..", "out", "output.png"));
     let endTime = Date.now();
     console.log(
       "Time taken for encryption:",

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/bin/www"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,13 @@
   "homepage": "https://github.com/anantlk/Parallel-Encryption-Decryption-#readme",
   "dependencies": {
     "cluster": "^0.7.7",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
     "jimp": "^0.4.0",
+    "morgan": "~1.9.0",
     "node-forge": "^0.7.6",
-    "os": "^0.1.1"
+    "os": "^0.1.1",
+    "path": "^0.12.7"
   }
 }
