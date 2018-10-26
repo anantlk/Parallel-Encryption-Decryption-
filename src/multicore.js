@@ -3,13 +3,11 @@ const task = require("./services/task");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 const server = require("./services/create-server");
-
 let numberOfActiveChildProcesses = 0;
 let workers = [];
 let pos = 0;
 let encryptedData = [];
 let temp = [];
-let endTime, startTime;
 if (cluster.isMaster) {
   console.log(`Number of processors are ${numCPUs}`);
   masterProcess();
@@ -17,21 +15,30 @@ if (cluster.isMaster) {
   childProcess();
 }
 
-cluster.on("exit", worker => {
-  console.log(`\nWoker ${worker.id} exited\n`);
-  numberOfActiveChildProcesses--;
-  // console.log(
-  //   "Number of active child processes:",
-  //   numberOfActiveChildProcesses
-  // );
-  // if (numberOfActiveChildProcesses === 0) {
-  //   mergeData(temp);
-  //   // worker.data.response();
-  //   // console.log("done");
-  // }
-});
+// cluster.on("exit", worker => {
+//   worker.disconnect();
+//   console.log(`\nWoker ${worker.id} exited\n`);
+//   numberOfActiveChildProcesses--;
+//   // console.log(
+//   //   "Number of active child processes:",
+//   //   numberOfActiveChildProcesses
+//   // );
+//   if (numberOfActiveChildProcesses === 0) {
+//     mergeData(temp);
 
-function mergeData(tempArray) {
+//     workers = [];
+//     console.log(workers.length);
+//     numberOfActiveChildProcesses = 0;
+//     workers = [];
+//     pos = 0;
+//     encryptedData = [];
+//     temp = [];
+//     endTime = 0;
+//     startTime = 0;
+//   }
+// });
+
+function mergeData(tempArray, callback) {
   // console.log(tempArray.length);
   tempArray.sort(function(a, b) {
     return a.id - b.id;
@@ -41,15 +48,7 @@ function mergeData(tempArray) {
       encryptedData.push(pixel);
     }
   }
-  computeImage.write(encryptedData);
-  console.log("Image Encryption Successful!!");
-  // console.log(encryptedData.length);
-  endTime = Date.now();
-  console.log(
-    "Time taken for encryption",
-    (endTime - startTime) / 1000,
-    "seconds"
-  );
+  return computeImage.write(encryptedData, callback);
 }
 
 function childProcess() {
@@ -71,7 +70,14 @@ function childProcess() {
   });
 }
 
-module.exports.encryptImage = async function(res) {
+module.exports.encryptImage = async function(callback) {
+  numberOfActiveChildProcesses = 0;
+  workers = [];
+  pos = 0;
+  encryptedData = [];
+  temp = [];
+
+  // cluster.disconnect(async () => {
   console.log(`Master ${process.pid} is running`);
   for (let i = 0; i < numCPUs; i++) {
     console.log(`Forking process number ${i}`);
@@ -82,15 +88,14 @@ module.exports.encryptImage = async function(res) {
       console.log(
         `Master recieves msg ${msg.data.length} from worker ${msg.id}`
       );
-
-      if (numberOfActiveChildProcesses === 0) {
-        mergeData(temp);
-        res.send("Done");
-        // worker.data.response();
-        // console.log("done");
-      }
-
       temp.push(msg);
+    });
+    worker.on("disconnect", () => {
+      numberOfActiveChildProcesses--;
+      if (numberOfActiveChildProcesses === 0) {
+        console.log("encryption is done");
+        return mergeData(temp, callback);
+      }
     });
   }
   let image = await computeImage.read();
@@ -98,7 +103,6 @@ module.exports.encryptImage = async function(res) {
   let numOfPixels = pixelArray.length;
   console.log("Width of the image:", image.bitmap.width);
   console.log("Height of the image:", image.bitmap.height);
-  startTime = Date.now();
   console.log("Encrypting the image...");
   workers.forEach((worker, index) => {
     worker.send({
@@ -112,7 +116,7 @@ module.exports.encryptImage = async function(res) {
     });
     pos = pos + parseInt(numOfPixels / workers.length);
   });
-  return "Done";
+  // });
 };
 
 function masterProcess() {
