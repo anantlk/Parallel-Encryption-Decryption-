@@ -1,11 +1,11 @@
 {
-  "name": "Parallel-Image-Computation",
+  "name": "parallel-image-encryption",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/bin/www"
+    "start": "nodemon ./src/bin/www"
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,8 @@
     "node-forge": "^0.7.6",
     "os": "^0.1.1",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
   }
 }

@@ -1,14 +1,15 @@
-const computeImage = require("./image");
-const task = require("./task");
+const computeImage = require("./services/image");
+const task = require("./services/task");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
+const server = require("./services/create-server");
+
 let numberOfActiveChildProcesses = 0;
 let workers = [];
 let pos = 0;
 let encryptedData = [];
 let temp = [];
-let startTime, endTime;
-
+let endTime, startTime;
 if (cluster.isMaster) {
   console.log(`Number of processors are ${numCPUs}`);
   masterProcess();
@@ -16,25 +17,27 @@ if (cluster.isMaster) {
   childProcess();
 }
 
-cluster.on("exit", (worker, code, signal) => {
+cluster.on("exit", worker => {
   console.log(`\nWoker ${worker.id} exited\n`);
   numberOfActiveChildProcesses--;
   // console.log(
   //   "Number of active child processes:",
   //   numberOfActiveChildProcesses
   // );
-  if (numberOfActiveChildProcesses === 0) {
-    mergeData(temp);
-  }
+  // if (numberOfActiveChildProcesses === 0) {
+  //   mergeData(temp);
+  //   // worker.data.response();
+  //   // console.log("done");
+  // }
 });
 
-function mergeData(temp) {
-  // console.log(temp.length);
-  // temp.sort(function(a, b) {
-  //   return a.id - b.id;
-  // });
-  for (obj of temp) {
-    for (pixel of obj.data) {
+function mergeData(tempArray) {
+  // console.log(tempArray.length);
+  tempArray.sort(function(a, b) {
+    return a.id - b.id;
+  });
+  for (let obj of tempArray) {
+    for (let pixel of obj.data) {
       encryptedData.push(pixel);
     }
   }
@@ -68,7 +71,7 @@ function childProcess() {
   });
 }
 
-async function masterProcess() {
+module.exports.encryptImage = async function(res) {
   console.log(`Master ${process.pid} is running`);
   for (let i = 0; i < numCPUs; i++) {
     console.log(`Forking process number ${i}`);
@@ -79,6 +82,14 @@ async function masterProcess() {
       console.log(
         `Master recieves msg ${msg.data.length} from worker ${msg.id}`
       );
+
+      if (numberOfActiveChildProcesses === 0) {
+        mergeData(temp);
+        res.send("Done");
+        // worker.data.response();
+        // console.log("done");
+      }
+
       temp.push(msg);
     });
   }
@@ -101,4 +112,10 @@ async function masterProcess() {
     });
     pos = pos + parseInt(numOfPixels / workers.length);
   });
+  return "Done";
+};
+
+function masterProcess() {
+  server.initiate(() => console.log("Listening on http://localhost:3000"));
+  // encryptImage();
 }
