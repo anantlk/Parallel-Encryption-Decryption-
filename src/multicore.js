@@ -48,7 +48,8 @@ function mergeData(tempArray, callback) {
       encryptedData.push(pixel);
     }
   }
-  return computeImage.write(encryptedData, callback);
+  return callback(encryptedData);
+  // return computeImage.write(encryptedData, callback);
 }
 
 function childProcess() {
@@ -70,10 +71,10 @@ function childProcess() {
   });
 }
 
-module.exports.encryptImage = async function(startIndex, endIndex, callback) {
+module.exports.encryptImage = function(pixelArray, callback) {
   numberOfActiveChildProcesses = 0;
   workers = [];
-  let pos = startIndex;
+  let pos = 0;
   encryptedData = [];
   temp = [];
 
@@ -100,15 +101,10 @@ module.exports.encryptImage = async function(startIndex, endIndex, callback) {
       }
     });
   }
-  // let image = await computeImage.read();
-  // let pixelArray = Array.prototype.slice.call(
-  //   image.bitmap.data,
-  //   startIndex,
-  //   endIndex
-  // );
-  // let numOfPixels = pixelArray.length;
-  console.log("Width of the image:", image.bitmap.width);
-  console.log("Height of the image:", image.bitmap.height);
+
+  let numOfPixels = pixelArray.length;
+  // console.log("Width of the image:", image.bitmap.width);
+  // console.log("Height of the image:", image.bitmap.height);
   console.log("Encrypting the image...");
 
   workers.forEach((worker, index) => {
