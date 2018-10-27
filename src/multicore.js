@@ -5,7 +5,7 @@ const numCPUs = require("os").cpus().length;
 const server = require("./services/create-server");
 let numberOfActiveChildProcesses = 0;
 let workers = [];
-let pos = 0;
+// let pos = 0;
 let encryptedData = [];
 let temp = [];
 if (cluster.isMaster) {
@@ -70,10 +70,10 @@ function childProcess() {
   });
 }
 
-module.exports.encryptImage = async function(callback) {
+module.exports.encryptImage = async function(startIndex, endIndex, callback) {
   numberOfActiveChildProcesses = 0;
   workers = [];
-  pos = 0;
+  let pos = startIndex;
   encryptedData = [];
   temp = [];
 
@@ -84,12 +84,14 @@ module.exports.encryptImage = async function(callback) {
     const worker = cluster.fork();
     numberOfActiveChildProcesses++;
     workers.push(worker);
+
     worker.on("message", msg => {
       console.log(
         `Master recieves msg ${msg.data.length} from worker ${msg.id}`
       );
       temp.push(msg);
     });
+
     worker.on("disconnect", () => {
       numberOfActiveChildProcesses--;
       if (numberOfActiveChildProcesses === 0) {
@@ -98,12 +100,17 @@ module.exports.encryptImage = async function(callback) {
       }
     });
   }
-  let image = await computeImage.read();
-  let pixelArray = Array.prototype.slice.call(image.bitmap.data, 0);
-  let numOfPixels = pixelArray.length;
+  // let image = await computeImage.read();
+  // let pixelArray = Array.prototype.slice.call(
+  //   image.bitmap.data,
+  //   startIndex,
+  //   endIndex
+  // );
+  // let numOfPixels = pixelArray.length;
   console.log("Width of the image:", image.bitmap.width);
   console.log("Height of the image:", image.bitmap.height);
   console.log("Encrypting the image...");
+
   workers.forEach((worker, index) => {
     worker.send({
       data: {
