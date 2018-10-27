@@ -32,8 +32,7 @@ function stringToHex(s) {
 if (process.pid) {
   console.log("Script running on process id:", process.pid);
 }
-
-Jimp.read(path.join(__dirname, "..", "data", "image.png"))
+Jimp.read(path.join(__dirname, "..", "data", "download.jpeg"))
   .then(image => {
     console.log("Width Of The image:", image.bitmap.width);
     console.log("Height Of The image:", image.bitmap.height);
@@ -45,7 +44,7 @@ Jimp.read(path.join(__dirname, "..", "data", "image.png"))
       image.bitmap.data[i] = parseInt(str, 16) % 255;
     }
     console.log("Image Encryption Successful!!");
-    image.write(path.join(__dirname, "..", "out", "output.png"));
+    image.write(path.join(__dirname, "..", "out", "output.jpeg"));
     let endTime = Date.now();
     console.log(
       "Time taken for encryption:",

@@ -6,6 +6,7 @@ const multicore = require("../multicore");
 const computeImage = require("../services/image");
 const Async = require("async");
 const request = require("request");
+const imageModule = require("../services/image");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -31,6 +32,8 @@ router.get("/encrypt", async (req, res, next) => {
   let image = await computeImage.read();
   let pixelArray = Array.prototype.slice.call(image.bitmap.data, 0);
   let numOfPixels = pixelArray.length;
+  console.log("numOfPixels", numOfPixels);
+  let time = Date.now();
   // const fpath = path.join(__dirname, "..", "out", "output.jpeg");
   Async.parallel(
     {
@@ -52,14 +55,24 @@ router.get("/encrypt", async (req, res, next) => {
             (numOfPixels / 2).toString(),
           (err, response, body) => {
             if (err) console.log(err);
-            return cb(null, body.data);
+            // console.log(response, body);
+            return cb(null, JSON.parse(body).data);
           }
         );
       }
     },
     (err, results) => {
       if (err) console.log(err);
-      console.log(results);
+      console.log(results.one.length, results.two.length);
+
+      // const encrpytedArray = results.one + results.two;
+      return imageModule.write(results.one, results.two, () => {
+        console.log("written");
+        console.log("time taken:", Date.now() - time);
+        res.json({
+          success: true
+        });
+      });
     }
   );
 });
