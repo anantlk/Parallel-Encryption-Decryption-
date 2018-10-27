@@ -1,0 +1,52 @@
+version: "3.2"
+
+networks:
+  testnet:
+    external:
+      name: testnet
+services:
+  encrpytion_server:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.hostname == priyansh-Inspiron-3543
+    image: priyansh/image-encryption
+    command: npm start
+    hostname: priyansh_server.example.com
+    volumes:
+      - /usr/src/app:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      testnet:
+        aliases:
+          - priyansh_server.example.com
+
+  encrpytion_server_anant:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.hostname == Anant
+    image: priyansh/image-encryption
+    hostname: anant_server.example.com
+    command: npm start
+    volumes:
+      - /usr/src/app:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3001:3000"
+    networks:
+      testnet:
+        aliases:
+          - anant_server.example.com
