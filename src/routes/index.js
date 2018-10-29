@@ -64,11 +64,12 @@ router.get("/encrypt", async (req, res, next) => {
     (err, results) => {
       if (err) console.log(err);
       console.log(results.one.length, results.two.length);
+      console.log("time taken:", (Date.now() - time) / 1000);
+      console.log("writing image..");
 
       // const encrpytedArray = results.one + results.two;
       return imageModule.write(results.one, results.two, () => {
         console.log("written");
-        console.log("time taken:", Date.now() - time);
         res.json({
           success: true
         });

@@ -32,7 +32,7 @@ function stringToHex(s) {
 if (process.pid) {
   console.log("Script running on process id:", process.pid);
 }
-Jimp.read(path.join(__dirname, "..", "data", "download.jpeg"))
+Jimp.read(path.join(__dirname, "..", "data", "original.jpeg"))
   .then(image => {
     console.log("Width Of The image:", image.bitmap.width);
     console.log("Height Of The image:", image.bitmap.height);

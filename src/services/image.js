@@ -1,7 +1,7 @@
 let Jimp = require("jimp");
 const path = require("path");
 
-const FILENAME = "download.jpeg";
+const FILENAME = "original.jpeg";
 module.exports.read = async () => {
   let image = await Jimp.read(path.join(__dirname, "..", "data", FILENAME));
   return image;
