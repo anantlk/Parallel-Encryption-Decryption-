@@ -14,8 +14,8 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == server1-Inspiron-3543
-    image: server1/image-encryption
+          - node.hostname == priyansh-Inspiron-3543
+    image: pdc/image-encryption
     command: npm start
     hostname: server1_server.example.com
     volumes:
@@ -37,8 +37,8 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == server2
-    image: server1/image-encryption
+          - node.hostname == Anant
+    image: pdc/image-encryption
     hostname: server2_server.example.com
     command: npm start
     volumes:
