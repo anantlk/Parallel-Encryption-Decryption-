@@ -51,7 +51,7 @@ router.get("/encrypt", async (req, res, next) => {
       },
       two: cb => {
         return request(
-          "http://anant_server.example.com:3000/receive/" +
+          "http://server2_server.example.com:3000/receive/" +
             (numOfPixels / 2).toString(),
           (err, response, body) => {
             if (err) console.log(err);

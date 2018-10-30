@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t=priyansh/image-encryption .
+docker build -t=server1/image-encryption .

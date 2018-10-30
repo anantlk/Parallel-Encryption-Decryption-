@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anantlk/Parallel-Encryption-Decryption-.git"
+    "url": "git+https://github.com/server2lk/Parallel-Encryption-Decryption-.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/anantlk/Parallel-Encryption-Decryption-/issues"
+    "url": "https://github.com/server2lk/Parallel-Encryption-Decryption-/issues"
   },
-  "homepage": "https://github.com/anantlk/Parallel-Encryption-Decryption-#readme",
+  "homepage": "https://github.com/server2lk/Parallel-Encryption-Decryption-#readme",
   "dependencies": {
     "async": "^2.6.1",
     "cluster": "^0.7.7",

@@ -14,10 +14,10 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == priyansh-Inspiron-3543
-    image: priyansh/image-encryption
+          - node.hostname == server1-Inspiron-3543
+    image: server1/image-encryption
     command: npm start
-    hostname: priyansh_server.example.com
+    hostname: server1_server.example.com
     volumes:
       - /usr/src/app:/usr/src/app
       - /usr/src/app/node_modules
@@ -26,9 +26,9 @@ services:
     networks:
       testnet:
         aliases:
-          - priyansh_server.example.com
+          - server1_server.example.com
 
-  encrpytion_server_anant:
+  encrpytion_server_server2:
     deploy:
       replicas: 1
       restart_policy:
@@ -37,9 +37,9 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == Anant
-    image: priyansh/image-encryption
-    hostname: anant_server.example.com
+          - node.hostname == server2
+    image: server1/image-encryption
+    hostname: server2_server.example.com
     command: npm start
     volumes:
       - /usr/src/app:/usr/src/app
@@ -49,4 +49,4 @@ services:
     networks:
       testnet:
         aliases:
-          - anant_server.example.com
+          - server2_server.example.com
