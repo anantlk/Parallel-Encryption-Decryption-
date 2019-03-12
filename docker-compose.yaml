@@ -5,7 +5,7 @@ networks:
     external:
       name: testnet
 services:
-  encrpytion_server:
+  encrpytion_server1:
     deploy:
       replicas: 1
       restart_policy:
@@ -14,13 +14,10 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == priyansh-Inspiron-3543
+          - node.hostname == your-hostname-1-here
     image: pdc/image-encryption
     command: npm start
     hostname: server1_server.example.com
-    volumes:
-      - /usr/src/app:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - "3000:3000"
     networks:
@@ -28,7 +25,7 @@ services:
         aliases:
           - server1_server.example.com
 
-  encrpytion_server_server2:
+  encrpytion_server2:
     deploy:
       replicas: 1
       restart_policy:
@@ -37,13 +34,10 @@ services:
         max_attempts: 3
       placement:
         constraints:
-          - node.hostname == Anant
+          - node.hostname == your-hostname-2-here
     image: pdc/image-encryption
     hostname: server2_server.example.com
     command: npm start
-    volumes:
-      - /usr/src/app:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - "3001:3000"
     networks:

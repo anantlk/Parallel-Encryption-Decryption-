@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:10
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install --quiet
+RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
 

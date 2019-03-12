@@ -1,4 +1,3 @@
-const computeImage = require("./services/image");
 const task = require("./services/task");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
@@ -15,29 +14,6 @@ if (cluster.isMaster) {
   childProcess();
 }
 
-// cluster.on("exit", worker => {
-//   worker.disconnect();
-//   console.log(`\nWoker ${worker.id} exited\n`);
-//   numberOfActiveChildProcesses--;
-//   // console.log(
-//   //   "Number of active child processes:",
-//   //   numberOfActiveChildProcesses
-//   // );
-//   if (numberOfActiveChildProcesses === 0) {
-//     mergeData(temp);
-
-//     workers = [];
-//     console.log(workers.length);
-//     numberOfActiveChildProcesses = 0;
-//     workers = [];
-//     pos = 0;
-//     encryptedData = [];
-//     temp = [];
-//     endTime = 0;
-//     startTime = 0;
-//   }
-// });
-
 function mergeData(tempArray, callback) {
   // console.log(tempArray.length);
   tempArray.sort(function(a, b) {
@@ -49,7 +25,6 @@ function mergeData(tempArray, callback) {
     }
   }
   return callback(encryptedData);
-  // return computeImage.write(encryptedData, callback);
 }
 
 function childProcess() {
@@ -78,6 +53,19 @@ module.exports.encryptImage = function(pixelArray, callback) {
   encryptedData = [];
   temp = [];
 
+  const onMessage = msg => {
+    console.log(`Master recieves msg ${msg.data.length} from worker ${msg.id}`);
+    temp.push(msg);
+  };
+
+  const onDisconnect = () => {
+    numberOfActiveChildProcesses--;
+    if (numberOfActiveChildProcesses === 0) {
+      console.log("encryption is done");
+      return mergeData(temp, callback);
+    }
+  };
+
   // cluster.disconnect(async () => {
   console.log(`Master ${process.pid} is running`);
   for (let i = 0; i < numCPUs; i++) {
@@ -86,25 +74,12 @@ module.exports.encryptImage = function(pixelArray, callback) {
     numberOfActiveChildProcesses++;
     workers.push(worker);
 
-    worker.on("message", msg => {
-      console.log(
-        `Master recieves msg ${msg.data.length} from worker ${msg.id}`
-      );
-      temp.push(msg);
-    });
+    worker.on("message", msg => onMessage(msg));
 
-    worker.on("disconnect", () => {
-      numberOfActiveChildProcesses--;
-      if (numberOfActiveChildProcesses === 0) {
-        console.log("encryption is done");
-        return mergeData(temp, callback);
-      }
-    });
+    worker.on("disconnect", onDisconnect);
   }
 
   let numOfPixels = pixelArray.length;
-  // console.log("Width of the image:", image.bitmap.width);
-  // console.log("Height of the image:", image.bitmap.height);
   console.log("Encrypting the image...");
 
   workers.forEach((worker, index) => {
@@ -119,10 +94,8 @@ module.exports.encryptImage = function(pixelArray, callback) {
     });
     pos = pos + parseInt(numOfPixels / workers.length);
   });
-  // });
 };
 
 function masterProcess() {
   server.initiate(() => console.log("Listening on http://localhost:3000"));
-  // encryptImage();
 }
