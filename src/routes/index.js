@@ -1,7 +1,5 @@
 var express = require("express");
 var router = express.Router();
-const path = require("path");
-const fs = require("fs");
 const multicore = require("../multicore");
 const computeImage = require("../services/image");
 const Async = require("async");
@@ -34,7 +32,6 @@ router.get("/encrypt", async (req, res, next) => {
   let numOfPixels = pixelArray.length;
   console.log("numOfPixels", numOfPixels);
   let time = Date.now();
-  // const fpath = path.join(__dirname, "..", "out", "output.jpeg");
   Async.parallel(
     {
       one: cb => {
@@ -67,7 +64,6 @@ router.get("/encrypt", async (req, res, next) => {
       console.log("time taken:", (Date.now() - time) / 1000);
       console.log("writing image..");
 
-      // const encrpytedArray = results.one + results.two;
       return imageModule.write(results.one, results.two, () => {
         console.log("written");
         res.json({
