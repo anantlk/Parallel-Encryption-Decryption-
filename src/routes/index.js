@@ -9,7 +9,7 @@ const request = require("request");
 const imageModule = require("../services/image");
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
@@ -52,7 +52,7 @@ router.get("/encrypt", async (req, res, next) => {
       two: cb => {
         return request(
           "http://server2_server.example.com:3000/receive/" +
-            (numOfPixels / 2).toString(),
+          (numOfPixels / 2).toString(),
           (err, response, body) => {
             if (err) console.log(err);
             // console.log(response, body);

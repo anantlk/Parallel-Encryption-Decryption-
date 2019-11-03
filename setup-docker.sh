@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t=pdc/image-encryption .
+docker build -t=hpc/image-encryption .

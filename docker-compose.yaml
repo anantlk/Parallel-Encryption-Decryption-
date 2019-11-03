@@ -12,15 +12,16 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-      placement:
-        constraints:
-          - node.hostname == priyansh-Inspiron-3543
-    image: pdc/image-encryption
+      # placement:
+      #   constraints:
+      #     - node.hostname == priyansh-Inspiron-3543
+    image: hpc/image-encryption
     command: npm start
     hostname: server1_server.example.com
     volumes:
-      - /usr/src/app:/usr/src/app
-      - /usr/src/app/node_modules
+      - /tmp/hpc-output:/tmp/hpc-output
+    #   - /usr/src/app:/usr/src/app
+    #   - /usr/src/app/node_modules
     ports:
       - "3000:3000"
     networks:
@@ -35,15 +36,16 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-      placement:
-        constraints:
-          - node.hostname == Anant
-    image: pdc/image-encryption
+      # placement:
+      #   constraints:
+      #     - node.hostname == Anant
+    image: hpc/image-encryption
     hostname: server2_server.example.com
     command: npm start
     volumes:
-      - /usr/src/app:/usr/src/app
-      - /usr/src/app/node_modules
+      - /tmp/hpc-output:/tmp/hpc-output
+      # - /usr/src/app:/usr/src/app
+      # - /usr/src/app/node_modules
     ports:
       - "3001:3000"
     networks:
