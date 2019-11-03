@@ -1,10 +1,19 @@
 #!/usr/bin/env node
-var app = require("../app");
-var debug = require("debug")("src:server");
-var http = require("http");
 
 module.exports.initiate = callback => {
-  const port = normalizePort(process.env.PORT || "3000");
+  /**
+   * Module dependencies.
+   */
+
+  var app = require("../app");
+  var debug = require("debug")("src:server");
+  var http = require("http");
+
+  /**
+   * Get port from environment and store in Express.
+   */
+
+  var port = normalizePort(process.env.PORT || "3000");
   app.set("port", port);
 
   /**
@@ -26,16 +35,16 @@ module.exports.initiate = callback => {
    */
 
   function normalizePort(val) {
-    let portToNormalize = parseInt(val);
+    var port = parseInt(val, 10);
 
-    if (isNaN(portToNormalize)) {
+    if (isNaN(port)) {
       // named pipe
       return val;
     }
 
-    if (portToNormalize >= 0) {
-      // portToNormalize number
-      return portToNormalize;
+    if (port >= 0) {
+      // port number
+      return port;
     }
 
     return false;

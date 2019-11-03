@@ -1,11 +1,12 @@
 var express = require("express");
 var router = express.Router();
+const path = require("path");
+const fs = require("fs");
 const multicore = require("../multicore");
 const computeImage = require("../services/image");
 const Async = require("async");
 const request = require("request");
 const imageModule = require("../services/image");
-const path = require("path");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -69,7 +70,9 @@ router.get("/encrypt", async (req, res, next) => {
       // const encrpytedArray = results.one + results.two;
       return imageModule.write(results.one, results.two, () => {
         console.log("written");
-        res.sendFile(path.join(__dirname, "..", "out", "output.jpeg"));
+        res.json({
+          success: true
+        });
       });
     }
   );
