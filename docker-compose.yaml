@@ -19,7 +19,7 @@ services:
     command: npm start
     hostname: server1_server.example.com
     volumes:
-      - /tmp/hpc-output:/tmp/hpc-output
+      - /tmp:/tmp
     #   - /usr/src/app:/usr/src/app
     #   - /usr/src/app/node_modules
     ports:
@@ -43,7 +43,7 @@ services:
     hostname: server2_server.example.com
     command: npm start
     volumes:
-      - /tmp/hpc-output:/tmp/hpc-output
+      - /tmp:/tmp
       # - /usr/src/app:/usr/src/app
       # - /usr/src/app/node_modules
     ports:

@@ -26,7 +26,7 @@ module.exports.write = async (encryptedData1, encryptedData2, callback) => {
     image.bitmap.data[data2StartPos + pos + 2] = encryptedData2[pos + 2];
     image.bitmap.data[data2StartPos + pos + 3] = encryptedData2[pos + 3];
   }
-  return image.write(path.join("/tmp/hpc-output/output.jpeg"), () => {
+  return image.write(path.join("/tmp/output.jpeg"), () => {
     console.log("written successfully");
     return callback();
   });
