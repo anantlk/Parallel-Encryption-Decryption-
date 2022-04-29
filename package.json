@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/server2lk/Parallel-Encryption-Decryption-#readme",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "cluster": "^0.7.7",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
